@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# TODO: replace with your real GitHub Pages URL once deployed
+Sitemap: https://aminebarrani.github.io/sitemap.xml
