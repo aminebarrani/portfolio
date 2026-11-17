@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion'
 import { content } from '../data/content'
 import { useLang } from '../lib/i18n'
-import { scrollToId, scrollToTop } from '../lib/scroll'
+import { lockScroll, scrollToId, scrollToTop } from '../lib/scroll'
 import { CloseIcon, MenuIcon } from './Icons'
 
 const SECTION_IDS = content.nav.items.map((i) => i.id)
@@ -11,6 +11,9 @@ export default function Nav() {
   const { lang, setLang, t } = useLang()
   const [active, setActive] = useState('')
   const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const menuBtnRef = useRef<HTMLButtonElement>(null)
+  const closeBtnRef = useRef<HTMLButtonElement>(null)
   const { scrollYProgress } = useScroll()
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, restDelta: 0.001 })
 
@@ -30,6 +33,31 @@ export default function Nav() {
     return () => observer.disconnect()
   }, [])
 
+  useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > 24)
+      if (window.scrollY < window.innerHeight * 0.4) setActive('')
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  useEffect(() => {
+    if (!open) return
+    lockScroll(true)
+    closeBtnRef.current?.focus()
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => {
+      lockScroll(false)
+      window.removeEventListener('keydown', onKey)
+      menuBtnRef.current?.focus()
+    }
+  }, [open])
+
   const navigate = (id: string) => {
     setOpen(false)
     scrollToId(id)
@@ -45,14 +73,21 @@ export default function Nav() {
       <header className="fixed left-1/2 top-4 z-[80] w-[min(94vw,1100px)] -translate-x-1/2">
         <nav
           aria-label="Navigation"
-          className="glass flex items-center justify-between rounded-full px-4 py-2.5 md:px-6"
+          className={`glass flex items-center justify-between rounded-full px-4 py-2.5 transition-[box-shadow,border-color] duration-300 md:px-6 ${
+            scrolled ? 'border-accent/15 shadow-[0_12px_40px_rgba(0,0,0,0.45)]' : ''
+          }`}
         >
           <button
             onClick={() => { setOpen(false); scrollToTop() }}
-            className="font-display text-sm font-bold tracking-tight text-ink"
+            aria-label={`${content.profile.name} — ${t(content.footer.backToTop)}`}
+            className="group flex shrink-0 items-center gap-2.5 rounded-full"
           >
-            <span className="text-accent">{content.profile.initials}</span>
-            <span className="ml-2 hidden sm:inline">{content.profile.lastName}</span>
+            <span className="flex h-8 w-8 items-center justify-center rounded-[10px] border border-accent/40 bg-accent/10 font-display text-[0.72rem] font-bold tracking-tight text-accent transition-all duration-300 group-hover:border-accent/80 group-hover:bg-accent/20 group-hover:shadow-[0_0_18px_rgba(34,211,238,0.35)]">
+              {content.profile.initials}
+            </span>
+            <span className="hidden font-display text-sm font-bold tracking-tight text-ink transition-colors duration-300 group-hover:text-accent sm:inline">
+              {content.profile.name}
+            </span>
           </button>
 
           <ul className="hidden items-center gap-1 lg:flex">
@@ -89,7 +124,8 @@ export default function Nav() {
               ))}
             </div>
             <button
-              className="rounded-full p-2 text-ink lg:hidden"
+              ref={menuBtnRef}
+              className="rounded-full p-2 text-ink transition-colors hover:text-accent lg:hidden"
               onClick={() => setOpen(true)}
               aria-label={t(content.nav.menu)}
               aria-expanded={open}
@@ -103,6 +139,9 @@ export default function Nav() {
       <AnimatePresence>
         {open && (
           <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-label={t(content.nav.menu)}
             className="fixed inset-0 z-[99] flex flex-col bg-base/95 backdrop-blur-xl lg:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -110,13 +149,14 @@ export default function Nav() {
             transition={{ duration: 0.3 }}
           >
             <div className="flex items-center justify-between px-6 py-5">
-              <span className="font-display font-bold">
-                <span className="text-accent">{content.profile.initials}</span>
+              <span className="flex h-8 w-8 items-center justify-center rounded-[10px] border border-accent/40 bg-accent/10 font-display text-[0.72rem] font-bold text-accent">
+                {content.profile.initials}
               </span>
               <button
+                ref={closeBtnRef}
                 onClick={() => setOpen(false)}
                 aria-label={t(content.nav.close)}
-                className="rounded-full p-2 text-ink"
+                className="rounded-full p-2 text-ink transition-colors hover:text-accent"
               >
                 <CloseIcon className="h-6 w-6" />
               </button>

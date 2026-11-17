@@ -53,7 +53,7 @@ function Shell() {
   }
 
   return (
-    <div className="grain relative min-h-screen bg-base text-ink">
+    <div className="grain ambient relative min-h-screen text-ink">
       <ParticleNetwork fixed subtle />
       <Cursor />
       <AnimatePresence mode="wait">

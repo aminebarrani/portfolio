@@ -21,6 +21,8 @@
 
 html {
   scroll-behavior: auto; /* Lenis owns scrolling */
+  scrollbar-width: thin;
+  scrollbar-color: #1c2233 var(--color-base);
 }
 
 body {
@@ -28,7 +30,12 @@ body {
   color: var(--color-ink);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
   overflow-x: hidden;
+}
+
+section[id] {
+  scroll-margin-top: 5rem;
 }
 
 ::selection {
@@ -50,11 +57,21 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-accent-dim);
 }
+::-webkit-scrollbar-thumb:active {
+  background: var(--color-accent);
+}
+::-webkit-scrollbar-corner {
+  background: var(--color-base);
+}
 
 :focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 3px;
-  border-radius: 2px;
+}
+
+g[role="button"]:focus-visible rect {
+  stroke: var(--color-accent);
+  stroke-opacity: 1;
 }
 
 /* ---------- grain overlay ---------- */
@@ -93,12 +110,14 @@ body {
   line-height: 1.05;
   letter-spacing: -0.025em;
   font-weight: 700;
+  text-wrap: balance;
 }
 .t-h3 {
   font-family: var(--font-display);
   font-size: clamp(1.15rem, 2vw, 1.5rem);
   letter-spacing: -0.015em;
   font-weight: 600;
+  text-wrap: balance;
 }
 .t-label {
   font-family: var(--font-mono);
@@ -117,10 +136,22 @@ body {
 }
 
 /* ---------- surfaces ---------- */
+.ambient {
+  background:
+    radial-gradient(1100px 700px at 88% -12%, rgba(139, 92, 246, 0.08), transparent 62%),
+    radial-gradient(900px 640px at -12% 28%, rgba(34, 211, 238, 0.06), transparent 60%),
+    radial-gradient(1200px 800px at 50% 118%, rgba(14, 116, 144, 0.07), transparent 65%),
+    var(--color-base);
+  background-attachment: fixed;
+}
+
 .glass {
   background: linear-gradient(160deg, rgba(17, 22, 38, 0.72), rgba(9, 11, 19, 0.55));
   backdrop-filter: blur(14px);
   border: 1px solid var(--color-line);
+  box-shadow:
+    inset 0 1px 0 rgba(240, 244, 248, 0.04),
+    0 10px 30px rgba(0, 0, 0, 0.22);
 }
 
 .hairline {
@@ -205,6 +236,25 @@ body {
 }
 .lenis.lenis-stopped {
   overflow: hidden;
+}
+
+/* ---------- short desktop viewports: keep pinned projects above the fold ---------- */
+@media (min-width: 768px) and (max-height: 760px) {
+  #projects .t-h2 {
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+  }
+  #projects .spotlight {
+    padding: 1.25rem;
+  }
+  #projects .spotlight > div:first-child > div:first-child {
+    margin-bottom: 0.75rem;
+  }
+  #projects .spotlight > div:first-child > p.mt-4 {
+    margin-top: 0.5rem;
+  }
+  #projects .spotlight > div:last-child > div.mb-6 {
+    margin-bottom: 0.75rem;
+  }
 }
 
 /* ---------- reduced motion ---------- */

@@ -17,7 +17,7 @@ function ProjectCard({
   const { t } = useLang()
   return (
     <SpotlightCard
-      className={`flex w-[85vw] shrink-0 flex-col justify-between rounded-2xl p-7 sm:w-[420px] md:h-[480px] md:w-[450px] ${
+      className={`flex w-[85vw] shrink-0 flex-col justify-between rounded-2xl p-7 sm:w-[420px] md:h-[min(480px,52vh)] md:w-[450px] ${
         project.isMain ? '!border-accent/30' : ''
       }`}
     >
@@ -107,14 +107,14 @@ export default function Projects({ onOpenProject }: { onOpenProject: (id: string
 
   return (
     <section ref={sectionRef} id="projects" className="relative overflow-hidden md:h-screen">
-      <div className="mx-auto w-full max-w-6xl px-5 pt-24 md:px-8 md:pt-0 md:h-full md:flex md:flex-col md:justify-center">
+      <div className="mx-auto w-full max-w-6xl px-5 pt-24 md:flex md:h-full md:flex-col md:justify-center md:px-8 md:pb-8 md:pt-24">
         <Reveal>
-          <div className="mb-10 flex items-baseline gap-5 md:mb-12">
+          <div className="mb-6 flex items-baseline gap-5 md:mb-[clamp(1rem,3.5vh,3rem)]">
             <span className="t-number">02</span>
             <span className="t-label">{t(content.projectsSection.sectionLabel)}</span>
             <span className="h-px flex-1 bg-line" />
           </div>
-          <div className="mb-10 flex flex-wrap items-end justify-between gap-4 md:mb-12">
+          <div className="mb-6 flex flex-wrap items-end justify-between gap-4 md:mb-[clamp(1rem,3.5vh,3rem)]">
             <h2 className="t-h2 max-w-md">{t(content.projectsSection.title)}</h2>
             <p className="max-w-sm font-mono text-xs leading-relaxed text-faint">
               {t(content.projectsSection.intro)}

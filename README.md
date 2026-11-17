@@ -26,10 +26,10 @@ Types are in `src/data/types.ts`. The language toggle (FR/EN) reads from this si
 
 ## Add your photo
 
-Drop a portrait (4:5, e.g. 800×1000 px) at **`public/photo.jpg`** — the About section picks it up automatically
-(until then it shows a placeholder slot).
+A branded placeholder ships at **`public/photo.jpg`**. To use your real portrait, overwrite that file
+with a 4:5 image (e.g. 800×1000 px) — the About section picks it up automatically, no code change needed.
 
-## Replace the placeholder URLs (3 places)
+## Replace the placeholder URLs (4 places)
 
 Once your GitHub Pages site exists, search & replace `aminebarrani.github.io` with your real URL in:
 
@@ -51,12 +51,16 @@ Once your GitHub Pages site exists, search & replace `aminebarrani.github.io` wi
    ```
 
 2. On GitHub: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-3. The workflow `.github/workflows/deploy.yml` builds with `BASE_PATH=/<repo>/` and publishes `dist/`
+3. The workflow `.github/workflows/deploy.yml` builds with `BASE_PATH=/<repo>/`
+   (or `/` if the repo is named `<your-username>.github.io`) and publishes `dist/`
    on every push to `main` (or manually via Actions → Run workflow).
 4. Your site is live at `https://<your-username>.github.io/<repo>/`.
 
-> Local builds use base `/`. To preview the Pages build locally, run `npm run deploy:local`
-> (builds with base `/myWebsite/`) — adjust the folder name to your repo name.
+> Local builds use base `/`. To preview exactly what Pages will serve, run
+> `npm run deploy:local` — it builds with base `/myWebsite/` and serves it at
+> `http://localhost:4173/myWebsite/` (adjust the folder name to your repo name).
+> `npm run preview` alone always serves at root, so it cannot preview a base-path build.
+> Run `npm run build` afterwards to restore the root-base `dist/`.
 
 ## Structure
 

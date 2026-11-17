@@ -164,8 +164,8 @@ export function Toast({ message, visible }: { message: string; visible: boolean 
       style={{ pointerEvents: 'none' }}
     >
       <div className="glass flex items-center gap-2 rounded-full px-5 py-3 font-mono text-xs text-accent">
-        <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-        {message}
+        <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
+        {visible ? message : ''}
       </div>
     </motion.div>
   )

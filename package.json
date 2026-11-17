@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "deploy:local": "vite build --base=/myWebsite/"
+    "deploy:local": "vite build --base=/myWebsite/ && node scripts/serve-dist.mjs /myWebsite/"
   },
   "dependencies": {
     "framer-motion": "^12.23.12",

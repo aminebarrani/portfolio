@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { content } from '../data/content'
 import { useLang } from '../lib/i18n'
 import { Counter, Reveal, Section, SectionHeading, SpotlightCard } from './ui'
@@ -8,6 +8,19 @@ const PHOTO_SRC = `${import.meta.env.BASE_URL}photo.jpg`
 function PhotoSlot() {
   const { t } = useLang()
   const [missing, setMissing] = useState(true)
+
+  useEffect(() => {
+    let alive = true
+    fetch(PHOTO_SRC, { method: 'HEAD' })
+      .then((r) => {
+        if (alive && r.ok) setMissing(false)
+      })
+      .catch(() => {})
+    return () => {
+      alive = false
+    }
+  }, [])
+
   return (
     <div className="spotlight glass relative aspect-[4/5] overflow-hidden rounded-2xl">
       {!missing ? (
@@ -24,8 +37,6 @@ function PhotoSlot() {
           </p>
         </div>
       )}
-      {/* probe: show the real photo automatically once /public/photo.jpg exists */}
-      <img src={PHOTO_SRC} alt="" aria-hidden="true" className="hidden" onError={() => setMissing(true)} onLoad={() => setMissing(false)} />
     </div>
   )
 }

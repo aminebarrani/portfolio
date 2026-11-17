@@ -12,7 +12,8 @@ export function scrollToId(id: string) {
   const el = document.getElementById(id)
   if (!el) return
   if (lenisInstance) {
-    lenisInstance.scrollTo(el, { offset: -80 })
+    lenisInstance.start()
+    lenisInstance.scrollTo(el)
   } else {
     el.scrollIntoView({ behavior: 'smooth' })
   }
@@ -20,8 +21,17 @@ export function scrollToId(id: string) {
 
 export function scrollToTop() {
   if (lenisInstance) {
+    lenisInstance.start()
     lenisInstance.scrollTo(0)
   } else {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
+}
+
+export function lockScroll(lock: boolean) {
+  if (lenisInstance) {
+    if (lock) lenisInstance.stop()
+    else lenisInstance.start()
+  }
+  document.body.style.overflow = lock ? 'hidden' : ''
 }

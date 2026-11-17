@@ -151,11 +151,14 @@ export default function ArchitectureDiagram({
         {/* tooltip */}
         {activeNode && (
           <div
-            className="pointer-events-none absolute z-20 w-[min(78vw,340px)] -translate-x-1/2 rounded-xl border border-line bg-panel/95 p-4 shadow-2xl backdrop-blur-md"
+            className="pointer-events-none absolute z-20 w-[min(78vw,340px)] rounded-xl border border-line bg-panel/95 p-4 shadow-2xl backdrop-blur-md"
             style={{
-              left: `${((centerOf(activeNode).cx) / VIEW_W) * 100}%`,
-              top: `${((activeNode.y - 12) / VIEW_H) * 100}%`,
-              transform: 'translate(-50%, -100%)',
+              left: `clamp(180px, ${(centerOf(activeNode).cx / VIEW_W) * 100}%, calc(100% - 180px))`,
+              top:
+                activeNode.y < VIEW_H * 0.45
+                  ? `${((activeNode.y + activeNode.h + 12) / VIEW_H) * 100}%`
+                  : `${((activeNode.y - 12) / VIEW_H) * 100}%`,
+              transform: activeNode.y < VIEW_H * 0.45 ? 'translate(-50%, 0)' : 'translate(-50%, -100%)',
             }}
           >
             <p className="mb-1 font-mono text-[0.65rem] uppercase tracking-widest" style={{ color: KIND_STYLE[activeNode.kind].stroke }}>

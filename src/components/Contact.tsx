@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { content } from '../data/content'
 import { useLang } from '../lib/i18n'
 import { Magnetic, Reveal, Section, SectionHeading, Toast } from './ui'
@@ -9,6 +9,9 @@ const EMAIL = 'amine.barrani@esprit.tn'
 export default function Contact() {
   const { t } = useLang()
   const [copied, setCopied] = useState(false)
+  const hideTimer = useRef<number | undefined>(undefined)
+
+  useEffect(() => () => window.clearTimeout(hideTimer.current), [])
 
   const copyEmail = async () => {
     try {
@@ -23,7 +26,8 @@ export default function Contact() {
       ta.remove()
     }
     setCopied(true)
-    setTimeout(() => setCopied(false), 2600)
+    window.clearTimeout(hideTimer.current)
+    hideTimer.current = window.setTimeout(() => setCopied(false), 2600)
   }
 
   return (

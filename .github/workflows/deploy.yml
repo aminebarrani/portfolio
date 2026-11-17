@@ -25,10 +25,20 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
+      - name: Compute base path
+        id: base
+        env:
+          REPO_NAME: ${{ github.event.repository.name }}
+        run: |
+          if [[ "$REPO_NAME" == *.github.io ]]; then
+            echo "path=/" >> "$GITHUB_OUTPUT"
+          else
+            echo "path=/$REPO_NAME/" >> "$GITHUB_OUTPUT"
+          fi
       - name: Build
         run: npm run build
         env:
-          BASE_PATH: /${{ github.event.repository.name }}/
+          BASE_PATH: ${{ steps.base.outputs.path }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
